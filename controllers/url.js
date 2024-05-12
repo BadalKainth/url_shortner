@@ -22,13 +22,20 @@ async function handleGenerateNewShortURL(req, res) {
 }
 
 async function handleGetAnalytics(req, res) {
-  const shortId = req.params.shortId;
-  const result = await URL.findOne({ shortId });
-  return res.json({
-    totalClicks: result.visitHistory.length,
-    analytics: result.visitHistory,
-  });
+  try {
+    const shortId = req.params.shortId;
+    const result = await URL.findOne({ shortId });
+    return res.json({
+      totalClicks: result.visitHistory.length,
+      analytics: result.visitHistory,
+    });
+  } catch (error) {
+    res.status(500).send({
+      error: "Loading analytics failed!" + error.message,
+    });
+  }
 }
+
 module.exports = {
   handleGenerateNewShortURL,
   handleGetAnalytics,
